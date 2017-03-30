@@ -7,7 +7,7 @@ A java API to show notifications, child of <a href="https://github.com/NiconDevT
 
 Some changes:
 <ul>    
-    <li>Added transparency support to notification.<li>
+    <li>Added transparency support to notification.</li>
     <li>NO_ICON option to show a notification without icon, useful to save space in long notifications.</li>
     <li>Enable/Disable printing debug information related with the api.</li>
     <li>Added option to choose the default border of the notification (ROUNDED, RAISED, ETCHED, NONE)</li>
