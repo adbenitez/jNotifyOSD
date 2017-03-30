@@ -714,7 +714,7 @@ public class Notification {
         init_Server();
         NotifyConfig config = NotifyConfig.getInstance();
         String title = config.getLibName();
-        String version = config.getLibVersion();
+        double version = config.getLibVersion();
         String info = config.getLibInfo();        
         event = new NotificationEvent(title,
                                       "Version: " + version

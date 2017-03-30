@@ -15,6 +15,7 @@
 
 package adbenitez.notify.gui.desktopNotify;
 
+import java.applet.AudioClip;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,7 +31,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
-import javafx.scene.media.AudioClip;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

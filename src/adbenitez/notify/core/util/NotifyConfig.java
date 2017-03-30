@@ -17,10 +17,10 @@ package adbenitez.notify.core.util;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.applet.AudioClip;
+import java.applet.Applet;
 import java.net.URL;
 import java.util.HashMap;
-
-import javafx.scene.media.AudioClip;
 
 import javax.swing.ImageIcon;
 
@@ -31,31 +31,28 @@ import adbenitez.notify.core.font.FontController;
 
 public class NotifyConfig {
     //	================= ATTRIBUTES ==============================
-    private static final String CLASS_NAME = NotifyConfig.class.getSimpleName();
-    private static final String API_NAME = "jNotifyOSD";
-    private static final String API_VERSION = "1.0";
-    private static final String API_INFO = "By adbenitez based on NiconSystem CO | Icons desingned By Nitrux  MX";    
 
-    private static final String FS =  System.getProperty("file.separator");
-    private static final String SOUNDS_PATH = FS+"adbenitez"+FS+"notify"+FS+"core"+FS+"sound"+FS;    
-    private static final String CLOSE_ICON = "CLOSE_ICON.png";
+    private static NotifyConfig instance;
+    private static boolean debug;
+    private final String CLASS_NAME;
+    
+    private final String SOUNDS_PATH; 
+    private final String CLOSE_ICON;
     private String icons_clasic;
     private String icons_new;
     private String iconsPath;
 
+    private final FontController font;
     private final Font titleFontDesk;
     private final Font messageFontDesk;
-    private final FontController font;
     private final Color fontErrorColor;
     private final Color fontWarningColor;
     private final Color fontOKColor;
     private final Color fontConfirmColor;
     private final Color fontDefaultColor;
-    private static NotifyConfig instance;
     private final String libName;
-    private final String libVersion;
+    private final double libVersion;
     private final String libInfo;
-    private static boolean debug;
     private HashMap<SoundType, AudioClip> sounds;
     
     //	================= END ATTRIBUTES ==========================
@@ -73,16 +70,17 @@ public class NotifyConfig {
         fontConfirmColor = new Color(57, 191, 222);
         fontDefaultColor = new Color(214, 214, 214);
 
-        String iconsDir = iconsPath = FS+"adbenitez"+FS+"notify"+FS+"gui"+FS+"Icons"+FS+"Nitrux"+FS;
-        icons_clasic = iconsDir+"Clasic"+FS;
-        icons_new = iconsDir+"Ardis"+FS;
-        
-        useNewIcons(true);
-
-        libName = API_NAME;
-        libVersion = API_VERSION;
-        libInfo = API_INFO;
+        CLASS_NAME = NotifyConfig.class.getSimpleName();
+        libName = "jNotifyOSD";
+        libVersion = 1.0D;
+        libInfo = "By adbenitez based on NiconSystem CO | Icons desingned By Nitrux  MX";    
+        CLOSE_ICON = "CLOSE_ICON.png";
+        SOUNDS_PATH = "/adbenitez/notify/core/sound/";
+        iconsPath = "/adbenitez/notify/gui/Icons/Nitrux/";
+        icons_clasic = iconsPath + "Clasic/";
+        icons_new = iconsPath + "Ardis/";
         debug = false;
+        useNewIcons(true);
     }
 
     //	================= END CONSTRUCTORS =======================
@@ -136,7 +134,7 @@ public class NotifyConfig {
         return libName;
     }
     
-    public String getLibVersion() {
+    public double getLibVersion() {
         return libVersion;
     }
     
@@ -170,7 +168,7 @@ public class NotifyConfig {
                 urlSound = SOUNDS_PATH + st.name() + ".wav";
                 url = getClass().getResource(urlSound);
                 if (url != null) {
-                    sounds.put(st, new AudioClip(url.toString()));
+                    sounds.put(st, Applet.newAudioClip(url));
                 }
             }
         }

@@ -36,7 +36,7 @@ public class Main extends JFrame {
 
     private final NotifyConfig config = NotifyConfig.getInstance();
     private final String API_NAME = config.getLibName();
-    private final String API_VERSION = config.getLibVersion();
+    private final double API_VERSION = config.getLibVersion();
 
     private JPanel panel;
     private JButton[] buttons;
