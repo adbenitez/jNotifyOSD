@@ -70,6 +70,7 @@ public class DesktopNotify extends JDialog
     protected final NotificationEvent ev;
     private int nid;
     private IconType icon;
+    private Color iconColor;
     private NotificationTheme theme;
     private String urlIcon;
     private final NotifyConfig config;
@@ -128,6 +129,21 @@ public class DesktopNotify extends JDialog
         init();
     }
 
+    public DesktopNotify(NotificationEvent ev, IconType icon, Color iconColor) {
+        this.ev = ev;
+        this.icon = icon;
+        this.iconColor = iconColor;
+        config = NotifyConfig.getInstance();
+        use_url = false;
+        
+        setNotificationTheme();
+        setSize(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT);
+        setUndecorated(true);
+        setAlwaysOnTop(true);
+        setResizable(false);
+        init();
+    }
+    
     /**
      * Creates a desktop notification.
      * @param ev the notification event.
@@ -164,13 +180,19 @@ public class DesktopNotify extends JDialog
         jbClose = new JButton();
         jbClose.setBorderPainted(false);
         jbClose.setContentAreaFilled(false);
-        ImageIcon closeIcon = config.getCloseIcon();
-        jbClose.setIcon(closeIcon);
-        int width = closeIcon.getIconWidth();
-        int height = closeIcon.getIconHeight(); 
-        jbClose.setPreferredSize(new Dimension(width, height));
+        Color fore = theme.getMessageForeground();
+        ImageIcon closeIcon = config.getCloseIcon(fore);
+        if (closeIcon == null) {
+            jbClose.setText("X");
+            jbClose.setForeground(fore);
+        } else {
+            jbClose.setIcon(closeIcon); 
+            int width = closeIcon.getIconWidth();
+            int height = closeIcon.getIconHeight();
+            jbClose.setPreferredSize(new Dimension(width, height));
+        }
         jbClose.addActionListener(this);
-                
+        
         jlMessage = new NLabel(ev.getText());
         jlMessage.setFont(config.getMessageFontDesk());
         jlMessage.setForeground(theme.getMessageForeground());
@@ -343,7 +365,7 @@ public class DesktopNotify extends JDialog
                 setNotifIcon(new ImageIcon(scaled));
             }
         } else if (icon != null) {
-            setNotifIcon(config.getIcon(icon));
+            setNotifIcon(config.getIcon(icon, iconColor));
         }
     }
 

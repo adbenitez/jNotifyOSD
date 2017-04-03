@@ -72,6 +72,12 @@ public class DesktopConfirm extends DesktopNotify
         init();
     }
 
+    public DesktopConfirm(NotificationEvent ev, IconType icon, Color iconColor) {
+        super(ev, icon, iconColor);
+        setSize(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT);
+        init();
+    }
+    
     //	================= END CONSTRUCTORS =======================
     
     //	===================== METHODS ============================

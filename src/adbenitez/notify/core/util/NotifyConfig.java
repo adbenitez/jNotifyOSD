@@ -15,14 +15,17 @@
 
 package adbenitez.notify.core.util;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Font;
-import java.applet.AudioClip;
-import java.applet.Applet;
+import java.awt.image.MemoryImageSource;
+import java.awt.image.PixelGrabber;
 import java.net.URL;
 import java.util.HashMap;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 import adbenitez.notify.core.Notification;
 import adbenitez.notify.core.Notification.IconType;
@@ -38,9 +41,8 @@ public class NotifyConfig {
     
     private final String SOUNDS_PATH; 
     private final String CLOSE_ICON;
-    private String icons_clasic;
-    private String icons_new;
-    private String iconsPath;
+    private String icons_pack;
+    private String ICONS_PATH;
 
     private final FontController font;
     private final Font titleFontDesk;
@@ -54,6 +56,7 @@ public class NotifyConfig {
     private final double libVersion;
     private final String libInfo;
     private HashMap<SoundType, AudioClip> sounds;
+    private final JPanel component;
     
     //	================= END ATTRIBUTES ==========================
 
@@ -76,11 +79,10 @@ public class NotifyConfig {
         libInfo = "By adbenitez based on NiconSystem CO | Icons desingned By Nitrux  MX";    
         CLOSE_ICON = "CLOSE_ICON.png";
         SOUNDS_PATH = "/adbenitez/notify/core/sound/";
-        iconsPath = "/adbenitez/notify/gui/Icons/Nitrux/";
-        icons_clasic = iconsPath + "Clasic/";
-        icons_new = iconsPath + "Ardis/";
+        ICONS_PATH = "/adbenitez/notify/gui/Icons/";
+        icons_pack = "Ardis/";
         debug = false;
-        useNewIcons(true);
+        component = new JPanel();
     }
 
     //	================= END CONSTRUCTORS =======================
@@ -116,20 +118,13 @@ public class NotifyConfig {
     }
 
     public void setIconsPath(String path) {
-        iconsPath = path;
+        ICONS_PATH = path;
     }
     
     public String getIconsPath() {
-        return iconsPath;
+        return ICONS_PATH;
     }
 
-    public void useNewIcons(boolean b) {
-        if (b) {
-            iconsPath = icons_new;
-        } else {
-            iconsPath = icons_clasic;
-        }
-    }
     public String getLibName() {
         return libName;
     }
@@ -167,6 +162,10 @@ public class NotifyConfig {
             for (SoundType st : soundsT) {
                 urlSound = SOUNDS_PATH + st.name() + ".wav";
                 url = getClass().getResource(urlSound);
+                if (url == null && st == SoundType.ERROR_SOUND) {
+                    urlSound = SOUNDS_PATH + SoundType.WARNING_SOUND.name() + ".wav";
+                    url = getClass().getResource(urlSound);
+                }
                 if (url != null) {
                     sounds.put(st, Applet.newAudioClip(url));
                 }
@@ -178,7 +177,7 @@ public class NotifyConfig {
     public ImageIcon getIcon(IconType icon) {
         ImageIcon imageIcon = null;
         if (icon != Notification.NO_ICON) {
-            String path = getIconsPath() + icon.name() + ".png";
+            String path = getIconsPath() + icons_pack + icon.name() + ".png";
             URL url = getClass().getResource(path);
             if (url == null) {
                 if (debug) {
@@ -191,12 +190,67 @@ public class NotifyConfig {
         return imageIcon;
     }
 
-     public ImageIcon getCloseIcon() {
-         String closePath = getIconsPath() + CLOSE_ICON;
-         ImageIcon icon = new ImageIcon(getClass().getResource(closePath));
-         return  icon;
+    public ImageIcon getIcon(IconType iconType, Color color) {
+        ImageIcon icon = getIcon(iconType);
+        if (icon != null && color != null) {
+            icon = colorize(icon, color);
+        }
+        return icon;
+    }
+    
+    public ImageIcon getCloseIcon() {
+        ImageIcon icon = null;
+        String closePath = getIconsPath() + CLOSE_ICON;
+        URL url = getClass().getResource(closePath);
+        if (url != null) {
+            icon = new ImageIcon(url);
+        }
+        return  icon;
     }
 
+    public ImageIcon getCloseIcon(Color color) {
+        ImageIcon icon = getCloseIcon();
+        if (icon != null) {
+            icon = colorize(icon, color);
+        }
+        return icon;
+    }
+    
+    private ImageIcon colorize(ImageIcon icon, Color color) {
+        int[] pixels = new int[icon.getIconHeight() * icon.getIconWidth()];
+        try {
+            PixelGrabber grabber = new PixelGrabber(icon.getImage(), 0, 0, icon.getIconWidth(), 
+                                                    icon.getIconHeight(), pixels, 0,
+                                                    icon.getIconWidth());
+            grabber.grabPixels();
+            int r = color.getRed();
+            int g = color.getGreen();
+            int b = color.getBlue();
+            
+            int pixel;
+            for (int i = 0, acm; i < pixels.length; i++) {
+            	pixel = pixels[i];
+            	int alpha = (pixel >> 24) & 0xff;
+                int red   = (pixel >> 16) & 0xff;
+                int green = (pixel >>  8) & 0xff;
+                int blue  = pixel & 0xff;
+                acm = (blue + green + red) / 3; 
+
+                if (acm < 250) {
+                    pixels[i] = new Color((acm * r)/255, (acm * g)/255,
+                                          (acm * b)/255, alpha).getRGB();
+                }
+            }
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        MemoryImageSource mis = new MemoryImageSource(icon.getIconWidth(),
+                                                      icon.getIconHeight(),
+                                                      pixels, 0,
+                                                      icon.getIconWidth());
+        return new ImageIcon(component.createImage(mis));
+    }
+    
     public static NotifyConfig getInstance() {
         if (instance == null) {
             instance = new NotifyConfig();

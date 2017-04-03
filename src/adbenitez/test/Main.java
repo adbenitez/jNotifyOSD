@@ -28,10 +28,7 @@ import javax.swing.event.ChangeListener;
 public class Main extends JFrame {
     
     //	================= ATTRIBUTES ==============================
-    
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 1L;
 
     private final NotifyConfig config = NotifyConfig.getInstance();
@@ -49,7 +46,10 @@ public class Main extends JFrame {
     private JButton launchButt;
     private static final Color DARK_COLOR = new Color(Integer.parseInt("1f1f1f",16));
     private static final Color LIGHT_COLOR = new Color(Integer.parseInt("f0f0f0",16));
-    
+    private JButton customColorButt;
+    private JCheckBox customColorCheckB;
+    private Color customColor;
+
     //	================= END ATTRIBUTES ==========================
     
     //	================= CONSTRUCTORS ===========================
@@ -71,7 +71,7 @@ public class Main extends JFrame {
         buttons = getButtons();
         confirmButts = getConfirmButtons();
         JScrollPane js = new JScrollPane(getPanel());
-        setContentPane(js);
+        setContentPane(js); 
     }
     
     private JPanel getPanel() {
@@ -104,7 +104,7 @@ public class Main extends JFrame {
             sounds.setForeground(LIGHT_COLOR);
 
             // debug checkBox
-            final JCheckBox debug = new JCheckBox("Print debug messages (standard output).", true);
+            final JCheckBox debug = new JCheckBox("Print debug messages (standard output).", Notification.getDebug());
             debug.addItemListener(new ItemListener() {
                     public void itemStateChanged(ItemEvent evt) {
                         boolean b = evt.getStateChange() == ItemEvent.SELECTED;
@@ -112,23 +112,8 @@ public class Main extends JFrame {
                         debug.setToolTipText("Notification.setDebug("+b+")");
                     }
                 });
-            Notification.setDebug(debug.isSelected());
             debug.setToolTipText("Notification.setDebug("+debug.isSelected()+")");
             debug.setForeground(LIGHT_COLOR);
-
-            // iconsPack checkBox
-            final JCheckBox iconsPack = new JCheckBox("Use New Icons", true);
-            iconsPack.addItemListener(new ItemListener() {
-                    public void itemStateChanged(ItemEvent evt) {
-                        boolean b = evt.getStateChange() == ItemEvent.SELECTED;
-                        Notification.useNewIcons(b);
-                        iconsPack.setToolTipText("Notification.useNewIcons("+b+")");
-                        
-                    }
-                });
-            Notification.useNewIcons(iconsPack.isSelected());
-            iconsPack.setToolTipText("Notification.useNewIcons("+iconsPack.isSelected()+")");
-            iconsPack.setForeground(LIGHT_COLOR);
             
             // themes
             final JLabel themesLabel = new JLabel("Default theme: ");
@@ -261,43 +246,41 @@ public class Main extends JFrame {
             c.gridy = 0; c.gridx = 0;
             opt_panel.add(sounds, c);
             c.gridy = 1;
-            opt_panel.add(iconsPack, c);
-            c.gridy = 2;
             c.insets = new Insets(2, 5, 5, 5);//top, left, bott, right
             opt_panel.add(debug, c);
             
             c.insets = new Insets(2, 5, 2, 5);//top, left, bott, right
-            c.gridy = 3;
+            c.gridy = 2;
             c.gridx = 0; 
             opt_panel.add(themesLabel, c);
             c.gridx = 1;
             opt_panel.add(themes, c);
 
-            c.gridy = 4;
+            c.gridy = 3;
             c.gridx = 0; 
             opt_panel.add(typesLabel, c);
             c.gridx = 1;
             opt_panel.add(types, c);
             
-            c.gridy = 5;
+            c.gridy = 4;
             c.gridx = 0;            
             opt_panel.add(borderLabel, c);
             c.gridx = 1;            
             opt_panel.add(border, c);
 
-            c.gridy = 6;
+            c.gridy = 5;
             c.gridx = 0;            
             opt_panel.add(orientationLabel, c);
             c.gridx = 1;            
             opt_panel.add(orientation, c);
 
-            c.gridy = 7;
+            c.gridy = 6;
             c.gridx = 0;            
             opt_panel.add(opacityLabel, c);
             c.gridx = 1;            
             opt_panel.add(opacity, c);
 
-            c.gridy = 8;
+            c.gridy = 7;
             c.gridx = 0;            
             opt_panel.add(timeoutLabel, c);
             c.gridx = 1;            
@@ -364,7 +347,7 @@ public class Main extends JFrame {
             c.weightx = 1;
             
             c.gridy = 0; c.gridx = 0;
-            c.insets = new Insets(40, 5, 2, 5);//top, left, bott, right
+            c.insets = new Insets(5, 5, 2, 5);//top, left, bott, right
             label = new JLabel("Title:");
             label.setForeground(LIGHT_COLOR);
             label.setToolTipText("See de 'Launch' button to get the code snippet.");
@@ -389,8 +372,13 @@ public class Main extends JFrame {
             custom_panel.add(label, c);
             c.gridx = 1;
             custom_panel.add(getIconComB(), c);
-            
+
             c.gridy = 3; c.gridx = 0;
+            custom_panel.add(getCustomColorCheckB(), c);
+            c.gridx = 1;
+            custom_panel.add(getCustomColorButt(), c);
+            
+            c.gridy = 4; c.gridx = 0;
             label = new JLabel("Notification method:");
             label.setForeground(LIGHT_COLOR);
             label.setToolTipText("See de 'Launch' button to get the code snippet.");
@@ -398,7 +386,7 @@ public class Main extends JFrame {
             c.gridx = 1;
             custom_panel.add(getTypeComB(), c);
 
-            c.gridy = 4; c.gridx = 0;
+            c.gridy = 5; c.gridx = 0;
             c.weighty = 1;
             c.gridwidth = 2;
             c.anchor = GridBagConstraints.CENTER;
@@ -562,6 +550,44 @@ public class Main extends JFrame {
         return iconComB;
     }
 
+    private JButton getCustomColorButt() {
+        if (customColorButt == null) {
+            customColorButt = new JButton("Pick");
+            customColorButt.setEnabled(false);
+            customColor = Color.white;
+            customColorButt.setBackground(customColor);
+            customColorButt.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        Color color = JColorChooser.showDialog(Main.this, "selecciona un color", customColor);
+                        if (color != null) {
+                            customColor = color;
+                        }
+                        customColorButt.setBackground(customColor);
+                        setLaunchToolTip();
+                    }
+                });
+        }
+        return customColorButt;
+    }
+
+    private JCheckBox getCustomColorCheckB() {
+        if (customColorCheckB == null) {
+            customColorCheckB = new JCheckBox("Change Icon Color:");
+            customColorCheckB.setForeground(LIGHT_COLOR);
+            customColorCheckB.addItemListener(new ItemListener() {
+                    public void itemStateChanged(ItemEvent evt) {
+                        if (evt.getStateChange() == ItemEvent.SELECTED) {
+                            getCustomColorButt().setEnabled(true);
+                        } else {
+                            getCustomColorButt().setEnabled(false);
+                        }
+                        setLaunchToolTip();
+                    }
+                });
+        }
+        return customColorCheckB;
+    }
+    
     private JComboBox<String> getTypeComB() {
         if (typeComB == null) {
             String[] types = {"show", "showConfirm"};
@@ -586,9 +612,17 @@ public class Main extends JFrame {
                         IconType icon = (IconType)iconComB.getSelectedItem();
                         String method = (String)typeComB.getSelectedItem();
                         if (method.equals("show")) {
-                            Notification.show(title, message, icon);
+                            if (customColorCheckB.isSelected()) {
+                                Notification.show(title, message, icon, customColor);
+                            } else {
+                                Notification.show(title, message, icon);
+                            }
                         } else {
-                            Notification.showConfirm(title, message, icon);
+                            if (customColorCheckB.isSelected()) {
+                                Notification.showConfirm(title, message, icon, customColor);
+                            } else {
+                                Notification.showConfirm(title, message, icon);
+                            }
                         }
                     }
                 });
@@ -600,8 +634,16 @@ public class Main extends JFrame {
     private void setLaunchToolTip() {
         String icon = ((IconType)getIconComB().getSelectedItem()).name();
         String method = (String)getTypeComB().getSelectedItem();
-        getLaunchButt().setToolTipText("Notification."+method+"(title, message,"
-                                       +" Notification."+icon+")");
+        if (getCustomColorCheckB().isSelected()) {
+            getLaunchButt().setToolTipText("Notification."+method
+                                           +"(title, message,"
+                                           +" Notification."+icon
+                                           +", new Color("+customColor.getRGB()+"))");
+        } else {
+            getLaunchButt().setToolTipText("Notification."+method
+                                           +"(title, message,"
+                                           +" Notification."+icon+")");
+        }
     }
     
     //	====================== END METHODS =======================

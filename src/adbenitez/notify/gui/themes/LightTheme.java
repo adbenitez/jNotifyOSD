@@ -53,7 +53,7 @@ public class LightTheme extends NotificationTheme {
         titleErrorForeground = new Color(Integer.parseInt("C91313", 16));
         titleSuccessForeground = new Color(Integer.parseInt("4BAF4F", 16));
 
-        messageForeground = new Color(Integer.parseInt("777777", 16));
+        messageForeground = new Color(Integer.parseInt("555555", 16));
     }
     
     //	================= END CONSTRUCTORS =======================
