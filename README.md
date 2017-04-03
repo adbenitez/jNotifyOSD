@@ -1,7 +1,6 @@
 jNotifyOSD
 ==========
 A java API to show notifications, child of <a href="https://github.com/NiconDevTeam/NiconNotifyOSD">NiconNotifyOSD 2.0</a>
-<br>Icons are form the <a href="https://github.com/Nitrux/ardis-icon-theme">Ardis (icon theme)</a>
 
 Screenshot:
 <img src="https://github.com/adbenitez/jNotifyOSD/blob/master/assets/Screenshot.png"></img>
