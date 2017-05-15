@@ -3,7 +3,7 @@ jNotifyOSD
 A java API to show notifications, child of <a href="https://github.com/NiconDevTeam/NiconNotifyOSD">NiconNotifyOSD 2.0</a>
 
 Screenshot:
-<img src="https://github.com/adbenitez/jNotifyOSD/blob/master/assets/Screenshot.png"></img>
+<img src="https://github.com/adbenitez/jNotifyOSD/blob/master/assets/Screenshot.png"/>
 
 Some features:
 <ul>    
