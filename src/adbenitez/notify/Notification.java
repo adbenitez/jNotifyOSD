@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017 Asiel Díaz Benítez <asieldbenitez@gmail.com>.
- * 
- * Based on NiconNotifyOSD 2.0 from: 
+ *
+ * Based on NiconNotifyOSD 2.0 from:
  * Frederick Adolfo Salazar Sanchez <fredefass01@gmail.com>
  *
  * This file is free software: you can redistribute it and/or modify
@@ -10,51 +10,52 @@
  * (at your option) any later version.
  * You should have received a copy of the GNU General Public License
  * along with this file.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
-package adbenitez.notify.core;
- 
+package adbenitez.notify;
+
 import java.awt.Color;
 
 import adbenitez.notify.core.server.ServerOSD;
 import adbenitez.notify.core.util.NotifyConfig;
+import adbenitez.notify.event.NotificationEvent;
 import adbenitez.notify.gui.desktopNotify.DesktopConfirm;
 import adbenitez.notify.gui.desktopNotify.DesktopNotify;
 
 /**
  * Class to show desktop notifications.
- * 
+ *
  */
 public class Notification {
     //	================= ATTRIBUTES =============================
-    
+
     public enum MessageType {
-        PLAIN_MESSAGE, INFORMATION_MESSAGE, SUCCESS_MESSAGE,
-        WARNING_MESSAGE, ERROR_MESSAGE, CONFIRM_MESSAGE
+        PLAIN, INFORMATION, SUCCESS,
+        WARNING, ERROR, CONFIRM
     }
 
     public enum SoundType {
-        SUCCESS_SOUND, ERROR_SOUND, WARNING_SOUND, MESSAGE_SOUND
+        SUCCESS, ERROR, WARNING, MESSAGE
     }
 
     public enum IconType {
-        NONE, CONFIRM_ICON, QUESTION_ICON, INFO_ICON,
-        SUCCESS_ICON, WARNING_ICON, ERROR_ICON,
-        
-        FACEBOOK_ICON, TWITTER_ICON, GOOGLE_ICON,
-        GPLUS_ICON, RSS_ICON, YAHOO_ICON, EVERNOTE_ICON,
-        
-        MESSAGE_ICON, IMAGE_ICON, NOTES_ICON,
-        UPDATE_ICON, SECURE_ICON, DISK_ICON, USB_ICON,
-        WEATHER_ICON, WIFI_ICON, DOWNLOAD_ICON,
-        MUSIC_ICON, PLUGIN_ICON, MAIL_ICON, 
-        CALENDAR_ICON, BATTERY_ICON,
-        CONTACT_ICON, ALARM_ICON,
+        NONE, CONFIRM, QUESTION, INFO,
+        SUCCESS, WARNING, ERROR,
+
+        FACEBOOK, TWITTER, GOOGLE,
+        GPLUS, RSS, YAHOO, EVERNOTE,
+
+        MESSAGE, IMAGE, NOTES,
+        UPDATE, SECURE, DISK, USB,
+        WEATHER, WIFI, DOWNLOAD,
+        MUSIC, PLUGIN, MAIL,
+        CALENDAR, BATTERY,
+        CONTACT, ALARM,
     }
 
     public enum ThemeType {
-        DARK_THEME, LIGHT_THEME, GRAY_THEME
+        DEFAULT, DARK, LIGHT, GRAY
     }
 
     public enum OrientationType {
@@ -65,112 +66,53 @@ public class Notification {
         NONE, ROUNDED, RAISED, ETCHED
     }
 
-    // Message type
-    public static final MessageType PLAIN_MESSAGE = MessageType.PLAIN_MESSAGE;
-    public static final MessageType INFORMATION_MESSAGE = MessageType.INFORMATION_MESSAGE;
-    public static final MessageType SUCCESS_MESSAGE = MessageType.SUCCESS_MESSAGE;
-    public static final MessageType WARNING_MESSAGE = MessageType.WARNING_MESSAGE;
-    public static final MessageType ERROR_MESSAGE = MessageType.ERROR_MESSAGE;
-    public static final MessageType CONFIRM_MESSAGE = MessageType.CONFIRM_MESSAGE;
-    // Sound type
-    public static final SoundType SUCCESS_SOUND = SoundType.SUCCESS_SOUND;
-    public static final SoundType ERROR_SOUND = SoundType.ERROR_SOUND;
-    public static final SoundType WARNING_SOUND = SoundType.WARNING_SOUND;
-    public static final SoundType MESSAGE_SOUND = SoundType.MESSAGE_SOUND;
-    // Icon type    
-    public static final IconType NO_ICON = IconType.NONE;
-    public static final IconType FACEBOOK_ICON = IconType.FACEBOOK_ICON;
-    public static final IconType TWITTER_ICON = IconType.TWITTER_ICON;
-    public static final IconType UPDATE_ICON = IconType.UPDATE_ICON;
-    public static final IconType SECURE_ICON = IconType.SECURE_ICON;
-    public static final IconType GOOGLE_ICON = IconType.GOOGLE_ICON;
-    public static final IconType DISK_ICON = IconType.DISK_ICON;
-    public static final IconType GPLUS_ICON = IconType.GPLUS_ICON;
-    public static final IconType WEATHER_ICON = IconType.WEATHER_ICON;
-    public static final IconType WIFI_ICON = IconType.WIFI_ICON;
-    public static final IconType DOWNLOAD_ICON = IconType.DOWNLOAD_ICON;
-    public static final IconType RSS_ICON = IconType.RSS_ICON;
-    public static final IconType EVERNOTE_ICON = IconType.EVERNOTE_ICON;
-    public static final IconType MUSIC_ICON = IconType.MUSIC_ICON;
-    public static final IconType PLUGIN_ICON = IconType.PLUGIN_ICON;
-    public static final IconType MAIL_ICON = IconType.MAIL_ICON;
-    public static final IconType IMAGE_ICON = IconType.IMAGE_ICON;
-    public static final IconType NOTES_ICON = IconType.NOTES_ICON;
-    public static final IconType CALENDAR_ICON = IconType.CALENDAR_ICON;
-    public static final IconType BATTERY_ICON = IconType.BATTERY_ICON;
-    public static final IconType CONTACT_ICON = IconType.CONTACT_ICON;
-    public static final IconType USB_ICON = IconType.USB_ICON;
-    public static final IconType ALARM_ICON = IconType.ALARM_ICON;
-    public static final IconType INFO_ICON = IconType.INFO_ICON;
-    public static final IconType SUCCESS_ICON = IconType.SUCCESS_ICON;
-    public static final IconType CONFIRM_ICON = IconType.CONFIRM_ICON;
-    public static final IconType QUESTION_ICON = IconType.QUESTION_ICON;
-    public static final IconType WARNING_ICON = IconType.WARNING_ICON;
-    public static final IconType ERROR_ICON = IconType.ERROR_ICON;
-    public static final IconType MESSAGE_ICON = IconType.MESSAGE_ICON;
-    public static final IconType YAHOO_ICON = IconType.YAHOO_ICON;
-    // Theme type
-    public static final ThemeType DARK_THEME = ThemeType.DARK_THEME;
-    public static final ThemeType LIGHT_THEME = ThemeType.LIGHT_THEME;
-    public static final ThemeType GRAY_THEME = ThemeType.GRAY_THEME;
-    // Orientation type
-    public static final OrientationType LEFT = OrientationType.LEFT;
-    public static final OrientationType RIGHT = OrientationType.RIGHT;
-    public static final OrientationType CENTER = OrientationType.CENTER;
-    // Border type
-    public static final BorderType NO_BORDER = BorderType.NONE;
-    public static final BorderType ROUNDED = BorderType.ROUNDED;
-    public static final BorderType RAISED = BorderType.RAISED;
-    public static final BorderType ETCHED = BorderType.ETCHED;
-    
-        
     private static ServerOSD serverOSD;
-    
+
     private static DesktopNotify notify;
     private static NotificationEvent event;
     private static DesktopConfirm confirm;
 
-    private static ThemeType default_theme = DARK_THEME;
-    private static BorderType default_border = ROUNDED;
-    private static OrientationType default_orientation = RIGHT;
-    private static MessageType default_type = INFORMATION_MESSAGE;
-    private static boolean default_sounds = false;
+    private static ThemeType default_theme = ThemeType.DEFAULT;
+    private static BorderType default_border = BorderType.ROUNDED;
+    private static OrientationType default_orientation = OrientationType.RIGHT;
+    private static MessageType default_type = MessageType.INFORMATION;
+    private static boolean default_sounds = true;
     private static int default_timeout = 10000;
     private static float default_opacity = 0.95f;
-    
+
     //	================= END ATTRIBUTES =========================
-    
+
     //	================= CONSTRUCTORS ===========================
-    
-       
+
+
     //	================= END CONSTRUCTORS =======================
-    
+
     //	===================== METHODS ============================
 
     public static void show(String message, MessageType type) {
         String title;
         switch (type) {
-        case INFORMATION_MESSAGE:
+        case INFORMATION:
             title = "Information";
-            break;      
-        case SUCCESS_MESSAGE:
+            break;
+        case SUCCESS:
             title = "Success";
             break;
-        case WARNING_MESSAGE:
+        case WARNING:
             title = "Warning";
             break;
-        case ERROR_MESSAGE:
+        case ERROR:
             title = "Error";
             break;
-        case CONFIRM_MESSAGE:
+        case CONFIRM:
             title = "Confirm";
             break;
-        default: // PLAIN_MESSAGE 
+        default: // PLAIN_MESSAGE
             title = "Message";
         }
         show(title, message, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -179,7 +121,7 @@ public class Notification {
     public static void show(String title, String message) {
         show(title, message, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -191,7 +133,7 @@ public class Notification {
                             int timeout) {
         show(title, message, default_type, timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -202,7 +144,7 @@ public class Notification {
                             MessageType type) {
         show(title, message, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -211,7 +153,7 @@ public class Notification {
      * @param timeout the notification timeout in milliseconds,
      * if timeout < 0 the notification don't close itself.
      */
-    public static void show(String title, String message, 
+    public static void show(String title, String message,
                             MessageType type, int timeout) {
         show(title, message, default_sounds, type, timeout);
     }
@@ -219,17 +161,17 @@ public class Notification {
     public static void show(String title, String message, boolean sound) {
         show(title, message, default_theme, sound, default_type, default_timeout);
     }
-    
-    public static void show(String title, String message, 
+
+    public static void show(String title, String message,
                             boolean sound, int timeout) {
         show(title, message, default_theme, sound, default_type, timeout);
     }
-    
-    public static void show(String title, String message, 
+
+    public static void show(String title, String message,
                             boolean sound, MessageType type) {
         show(title, message, default_theme, sound, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -239,11 +181,11 @@ public class Notification {
      * @param timeout the notification timeout in milliseconds,
      * if timeout < 0 the notification don't close itself.
      */
-    public static void show(String title, String message, 
+    public static void show(String title, String message,
                             boolean sound, MessageType type, int timeout) {
         show(title, message, default_theme, sound, type, timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -256,13 +198,11 @@ public class Notification {
      */
     public static void show(String title, String message, ThemeType theme,
                             boolean sound, MessageType type, int timeout) {
-        init_Server(); 
-        event = new NotificationEvent(title, message, theme,
-                                      default_orientation, default_border, default_opacity,
-                                      sound, type, timeout);
+        init_Server();
+        event = new NotificationEvent(title, message, theme, default_orientation, default_border, default_opacity, sound, type, timeout);
         notify = new DesktopNotify(event);
-        
-        serverOSD.send(notify); 
+
+        serverOSD.send(notify);
     }
 
     /**
@@ -299,7 +239,7 @@ public class Notification {
                             int timeout) {
         show(title, message, icon, iconColor, default_sounds, timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -311,7 +251,7 @@ public class Notification {
                             IconType icon, boolean sound) {
         show(title, message, icon, sound, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -321,18 +261,17 @@ public class Notification {
      * @param timeout the notification timeout in milliseconds,
      * if timeout < 0 the notification don't close itself.
      */
-    public static void show(String title, String message, 
+    public static void show(String title, String message,
                             IconType icon, boolean sound, int timeout) {
         show(title, message, default_theme, icon, sound, timeout);
     }
 
-    public static void show(String title, String message, 
+    public static void show(String title, String message,
                             IconType icon, Color iconColor,
                             boolean sound, int timeout) {
-        show(title, message, default_theme, icon,
-             iconColor, sound, timeout);
+        show(title, message, default_theme, icon, iconColor, sound, timeout);
     }
-    
+
     /**
      * Shows a desktop notification.
      * @param title the notification title.
@@ -351,8 +290,7 @@ public class Notification {
     public static void show(String title, String message, ThemeType theme,
                             IconType icon, Color iconColor,
                             boolean sound, int timeout) {
-        show(title, message, theme, icon, iconColor,
-             sound, default_type, timeout);
+        show(title, message, theme, icon, iconColor, sound, default_type, timeout);
     }
 
     public static void show(String title, String message, ThemeType theme,
@@ -376,31 +314,31 @@ public class Notification {
         notify = new DesktopNotify(event, icon, iconColor);
         serverOSD.send(notify);
     }
-    
+
     public static void showConfirm(String message, MessageType type) {
         String title;
         switch (type) {
-        case INFORMATION_MESSAGE:
+        case INFORMATION:
             title = "Information";
-            break;      
-        case SUCCESS_MESSAGE:
+            break;
+        case SUCCESS:
             title = "Success";
             break;
-        case WARNING_MESSAGE:
+        case WARNING:
             title = "Warning";
             break;
-        case ERROR_MESSAGE:
+        case ERROR:
             title = "Error";
             break;
-        case CONFIRM_MESSAGE:
+        case CONFIRM:
             title = "Confirm";
             break;
-        default: // PLAIN_MESSAGE 
+        default: // PLAIN_MESSAGE
             title = "Message";
         }
         showConfirm(title, message, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -421,10 +359,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    int timeout) {
-        showConfirm(title, message, 
-                    CONFIRM_MESSAGE, timeout);
+        showConfirm(title, message, MessageType.CONFIRM, timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -434,10 +371,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    MessageType type) {
-        showConfirm(title, message, 
-                    type, default_timeout);
+        showConfirm(title, message, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -449,10 +385,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    MessageType type, int timeout) {
-        showConfirm(title, message,
-                    default_sounds, type, timeout);
+        showConfirm(title, message, default_sounds, type, timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -462,10 +397,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    boolean sound) {
-        showConfirm(title, message,
-                    sound, default_timeout);
+        showConfirm(title, message, sound, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -477,10 +411,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    boolean sound, int timeout) {
-        showConfirm(title, message,
-                    sound, CONFIRM_MESSAGE, timeout);
+        showConfirm(title, message, sound, MessageType.CONFIRM, timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -491,10 +424,9 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    boolean sound, MessageType type) {
-        showConfirm(title, message, 
-                    sound, type, default_timeout);
+        showConfirm(title, message, sound, type, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -508,10 +440,9 @@ public class Notification {
     public static void showConfirm(String title, String message,
                                    boolean sound, MessageType type,
                                    int timeout) {
-        showConfirm(title, message, default_theme, 
-                    sound, type, timeout);
+        showConfirm(title, message, default_theme, sound, type, timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons.
@@ -543,16 +474,14 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    IconType icon) {
-        showConfirm(title, message,
-                    icon, default_timeout);
+        showConfirm(title, message, icon, default_timeout);
     }
 
     public static void showConfirm(String title, String message,
                                    IconType icon, Color iconColor) {
-        showConfirm(title, message,
-                    icon, iconColor, default_timeout);
+        showConfirm(title, message, icon, iconColor, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -564,15 +493,13 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    IconType icon, int timeout) {
-        showConfirm(title, message,
-                    icon, default_sounds, timeout);
+        showConfirm(title, message, icon, default_sounds, timeout);
     }
 
     public static void showConfirm(String title, String message,
                                    IconType icon, Color iconColor,
                                    int timeout) {
-        showConfirm(title, message,
-                    icon, iconColor, default_sounds, timeout);
+        showConfirm(title, message, icon, iconColor, default_sounds, timeout);
     }
 
     /**
@@ -585,17 +512,15 @@ public class Notification {
      */
     public static void showConfirm(String title, String message,
                                    IconType icon, boolean sound) {
-        showConfirm(title, message,
-                    icon, sound, default_timeout);
+        showConfirm(title, message, icon, sound, default_timeout);
     }
 
     public static void showConfirm(String title, String message,
                                    IconType icon, Color iconColor,
                                    boolean sound) {
-        showConfirm(title, message,
-                    icon, iconColor, sound, default_timeout);
+        showConfirm(title, message, icon, iconColor, sound, default_timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons width the default theme.
@@ -609,8 +534,7 @@ public class Notification {
     public static void showConfirm(String title, String message,
                                    IconType icon, boolean sound,
                                    int timeout) {
-        showConfirm(title, message, default_theme,
-                    icon, sound, timeout);
+        showConfirm(title, message, default_theme, icon, sound, timeout);
     }
 
     public static void showConfirm(String title, String message,
@@ -619,7 +543,7 @@ public class Notification {
         showConfirm(title, message, default_theme,
                     icon, iconColor, sound, timeout);
     }
-    
+
     /**
      * Shows a desktop notification with an "Accept"
      * and "Cancel" buttons.
@@ -635,9 +559,7 @@ public class Notification {
                                    ThemeType theme, IconType icon,
                                    boolean sound, int timeout) {
         init_Server();
-        event = new NotificationEvent(title, message, theme,
-                                      default_orientation, default_border,
-                                      default_opacity, sound, CONFIRM_MESSAGE, timeout);
+        event = new NotificationEvent(title, message, theme, default_orientation, default_border, default_opacity, sound, MessageType.CONFIRM, timeout);
         confirm = new DesktopConfirm(event, icon);
         serverOSD.send(confirm);
     }
@@ -647,13 +569,11 @@ public class Notification {
                                    Color iconColor, boolean sound,
                                    int timeout) {
         init_Server();
-        event = new NotificationEvent(title, message, theme,
-                                      default_orientation, default_border,
-                                      default_opacity, sound, CONFIRM_MESSAGE, timeout);
+        event = new NotificationEvent(title, message, theme, default_orientation, default_border, default_opacity, sound, MessageType.CONFIRM, timeout);
         confirm = new DesktopConfirm(event, icon, iconColor);
         serverOSD.send(confirm);
     }
-    
+
     /**
      * Sets the default sounds status for new notifications.
      * @param status the default sounds status.
@@ -669,7 +589,7 @@ public class Notification {
     public static boolean getSoundsStatus() {
         return default_sounds;
     }
-    
+
     /**
      * Sets the default timeout for new notifications.
      * @param timeout the notification timeout in milliseconds,
@@ -703,7 +623,7 @@ public class Notification {
         return default_theme;
     }
 
-    
+
     public static void setDefaultOrientation(OrientationType orientation) {
         default_orientation = orientation;
     }
@@ -759,12 +679,12 @@ public class Notification {
     public static boolean getDebug() {
         return NotifyConfig.getDebug();
     }
-    
+
     public static void removeAllNotifications() {
         init_Server();
         serverOSD.removeAll();
     }
-    
+
     /**
      * Initializes the ServerOSD.
      *
@@ -784,24 +704,22 @@ public class Notification {
         init_Server();
         NotifyConfig config = NotifyConfig.getInstance();
         String title = config.getLibName();
-        double version = config.getLibVersion();
-        String info = config.getLibInfo();        
+        String version = config.getLibVersion();
+        String info = config.getLibInfo();
         event = new NotificationEvent(title,
-                                      "Version: " + version
+                                      "License: GPL3    Version: " + version
                                       + "\n" + info,
                                       default_theme,
                                       default_orientation,
                                       default_border,
                                       default_opacity,
                                       default_sounds,
-                                      INFORMATION_MESSAGE, 
+                                      MessageType.INFORMATION,
                                       default_timeout);
         notify = new DesktopNotify(event);
         serverOSD.send(notify);
     }
 
-    
+
     //	====================== END METHODS =======================
 }
-
-

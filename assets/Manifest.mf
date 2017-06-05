@@ -1,3 +1,3 @@
-Main-Class: adbenitez.test.Main
+Main-Class: adbenitez.demo.Main
 Class-Path: 
-Version: 1.0
+Version: 1.1.0

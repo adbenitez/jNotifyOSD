@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Asiel Díaz Benítez <asieldbenitez@gmail.com>.
+ * Copyright (c) 2017 Asiel Díaz Benítez.
  *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,42 +10,34 @@
  *
  */
 
-package adbenitez.notify.core.util;
+package adbenitez.notify.event;
 
-import javax.swing.JTextArea;
-import java.awt.Color;
+public class DecisionEvent {
 
-/**
- * The class to show the notification messages.
- *
- */
-public class NLabel extends JTextArea {
+    public enum Decision {
+        ACCEPT, CANCEL, NONE
+    }
+
     //	================= ATTRIBUTES ==============================
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
+    private Decision decision;
 
     //	================= END ATTRIBUTES ==========================
 
     //	================= CONSTRUCTORS ===========================
 
-    public NLabel(String text) {
-        super(text);
-        setEditable(false);
-        setLineWrap(true);
-        setBackground(new Color(255,255,255, 0));
-        setBorder(null);
-        setWrapStyleWord(true);
-        setFocusable(false);
-        setOpaque(false);
+    public DecisionEvent (Decision decision) {
+        this.decision = decision;
     }
 
     //	================= END CONSTRUCTORS =======================
 
     //	===================== METHODS ============================
 
+    public Decision getDecision() {
+        return decision;
+    }
 
     //	====================== END METHODS =======================
+
 }

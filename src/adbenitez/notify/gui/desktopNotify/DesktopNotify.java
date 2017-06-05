@@ -1,8 +1,5 @@
 /*
  * Copyright (c) 2017 Asiel Díaz Benítez <asieldbenitez@gmail.com>.
- * 
- * Based on NiconNotifyOSD 2.0 from: 
- * Frederick Adolfo Salazar Sanchez <fredefass01@gmail.com>
  *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,47 +7,27 @@
  * (at your option) any later version.
  * You should have received a copy of the GNU General Public License
  * along with this file.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package adbenitez.notify.gui.desktopNotify;
 
 import java.applet.AudioClip;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Dimension;
-import java.awt.GraphicsDevice;
+import java.awt.*;
 import java.awt.GraphicsDevice.WindowTranslucency;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import adbenitez.notify.core.Notification;
-import adbenitez.notify.core.Notification.IconType;
-import adbenitez.notify.core.Notification.SoundType;
-import adbenitez.notify.core.NotificationEvent;
+import adbenitez.notify.Notification.IconType;
+import adbenitez.notify.Notification.SoundType;
+import adbenitez.notify.event.NotificationEvent;
 import adbenitez.notify.core.server.ServerOSD;
 import adbenitez.notify.core.util.NLabel;
 import adbenitez.notify.core.util.NotifyConfig;
-import adbenitez.notify.gui.themes.DarkTheme;
-import adbenitez.notify.gui.themes.GrayTheme;
-import adbenitez.notify.gui.themes.LightTheme;
-import adbenitez.notify.gui.themes.NotificationTheme;
+import adbenitez.notify.gui.themes.*;
 
 /**
  * A Notification dialog.
@@ -59,14 +36,11 @@ import adbenitez.notify.gui.themes.NotificationTheme;
 public class DesktopNotify extends JDialog
     implements ActionListener {
     //	================= ATTRIBUTES ==============================
-    
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 1L;
     private final String CLASS_NAME = getClass().getSimpleName();
     private GraphicsDevice gDevice;
-    
+
     protected final NotificationEvent ev;
     private int nid;
     private IconType icon;
@@ -74,11 +48,11 @@ public class DesktopNotify extends JDialog
     private NotificationTheme theme;
     private String urlIcon;
     private final NotifyConfig config;
-    
+
     protected JLabel jlTitle;
-    protected  NLabel jlMessage;    
+    protected  NLabel message;
     private JLabel jlIcon;
-    private JButton jbClose;
+    private IconButton jbClose;
     private JPanel panel;
     private Box top_hBox;
     private Box info_vBox;
@@ -86,9 +60,9 @@ public class DesktopNotify extends JDialog
     private Box icon_vBox;
     private static int ICON_SIZE = 67;
     private static boolean use_url = false;
-    
+
     protected static int NOTIFICATION_WIDTH = 380;
-    protected static int NOTIFICATION_HEIGHT = 98;
+    protected static int MINIMUM_HEIGHT = 98;
     protected static int MARGIN_RIGHT = 5;
     protected static int MARGIN_LEFT = 5;
     protected static int MARGIN_TOP = 5;
@@ -96,10 +70,10 @@ public class DesktopNotify extends JDialog
     protected static int PADDING_RIGHT = 5;
     protected static int PADDING_LEFT = 5;
     protected static int PADDING_TOP = 5;
-    protected static int PADDING_BOTTOM = 0;
-    
+    protected static int PADDING_BOTTOM = 5;
+
     //	================= END ATTRIBUTES ==========================
-    
+
     //	================= CONSTRUCTORS ===========================
 
     /**
@@ -120,9 +94,8 @@ public class DesktopNotify extends JDialog
         this.icon = icon;
         config = NotifyConfig.getInstance();
         use_url = false;
-        
+
         setNotificationTheme();
-        setSize(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT);
         setUndecorated(true);
         setAlwaysOnTop(true);
         setResizable(false);
@@ -135,15 +108,14 @@ public class DesktopNotify extends JDialog
         this.iconColor = iconColor;
         config = NotifyConfig.getInstance();
         use_url = false;
-        
+
         setNotificationTheme();
-        setSize(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT);
         setUndecorated(true);
         setAlwaysOnTop(true);
         setResizable(false);
         init();
     }
-    
+
     /**
      * Creates a desktop notification.
      * @param ev the notification event.
@@ -152,98 +124,104 @@ public class DesktopNotify extends JDialog
     public DesktopNotify(NotificationEvent ev, String url) {
         this.ev = ev;
         use_url = true;
-        urlIcon = url; 
+        urlIcon = url;
         config = NotifyConfig.getInstance();
-        
+
         setNotificationTheme();
-        setSize(NOTIFICATION_WIDTH, NOTIFICATION_HEIGHT);
         setUndecorated(true);
         setAlwaysOnTop(true);
         setResizable(false);
-        init();        
+        init();
     }
 
     //	================= END CONSTRUCTORS =======================
-    
+
     //	===================== METHODS ============================
-    
-    private void init() {        
+
+    private void init() {
+        setSize(NOTIFICATION_WIDTH, MINIMUM_HEIGHT);
         GraphicsEnvironment ge =
             GraphicsEnvironment.getLocalGraphicsEnvironment();
         gDevice = ge.getDefaultScreenDevice();
-        
+
         jlIcon = new JLabel();
 
         jlTitle = new JLabel(ev.getTitle());
         jlTitle.setFont(config.getTitleFontDesk());
-        
-        jbClose = new JButton();
-        jbClose.setBorderPainted(false);
-        jbClose.setContentAreaFilled(false);
+
+        jbClose = new IconButton();
         Color fore = theme.getMessageForeground();
         ImageIcon closeIcon = config.getCloseIcon(fore);
         if (closeIcon == null) {
             jbClose.setText("X");
             jbClose.setForeground(fore);
         } else {
-            jbClose.setIcon(closeIcon); 
-            int width = closeIcon.getIconWidth();
-            int height = closeIcon.getIconHeight();
-            jbClose.setPreferredSize(new Dimension(width, height));
+            jbClose.setIcon(closeIcon);
         }
         jbClose.addActionListener(this);
-        
-        jlMessage = new NLabel(ev.getText());
-        jlMessage.setFont(config.getMessageFontDesk());
-        jlMessage.setForeground(theme.getMessageForeground());
-        
+
+        message = new NLabel(ev.getText());
+        message.setFont(config.getMessageFontDesk());
+        message.setForeground(theme.getMessageForeground());
+
         // layout
 
         icon_vBox = Box.createVerticalBox();
         icon_vBox.add(jlIcon);
+        icon_vBox.add(Box.createRigidArea(new Dimension(0,PADDING_BOTTOM)));
         icon_vBox.add(Box.createVerticalGlue());
-        
+
         Box title_hBox = Box.createHorizontalBox();
         title_hBox.add(jlTitle);
         title_hBox.add(Box.createHorizontalGlue());
-        
+
         info_vBox = Box.createVerticalBox();
         info_vBox.add(Box.createRigidArea(new Dimension(0,PADDING_TOP)));
         info_vBox.add(title_hBox);
-        info_vBox.add(jlMessage);
-        
+        info_vBox.add(message);
+        info_vBox.add(Box.createRigidArea(new Dimension(0,PADDING_BOTTOM)));
         close_vBox = Box.createVerticalBox();
         close_vBox.add(Box.createRigidArea(new Dimension(0,PADDING_TOP)));
         close_vBox.add(jbClose);
+        close_vBox.add(Box.createRigidArea(new Dimension(0,PADDING_BOTTOM)));
         close_vBox.add(Box.createVerticalGlue());
 
         top_hBox = Box.createHorizontalBox();
 
         panel = new JPanel(new BorderLayout());
-        panel.setBackground(theme.getPanelBackground());
+        panel.setBackground(theme.getBackground());
         panel.add(top_hBox, BorderLayout.PAGE_START);
-        
+
         setOrientation();
         setDesktopInterface();
         setIconOption();
         setOpacityProp();
         setBorderType();
-        
+
         int w = getSize().width;
         w -= jlIcon.getPreferredSize().width;
         w -= jbClose.getPreferredSize().width;
-        w -= (PADDING_LEFT + PADDING_RIGHT+5);
+        w -= (PADDING_LEFT + PADDING_RIGHT + 5);
         Dimension d = jlTitle.getPreferredSize();
         d.setSize(w, d.height);
         jlTitle.setPreferredSize(d);
-        
-        d = jlMessage.getPreferredSize();
-        d.setSize(w, d.height);
-        jlMessage.setPreferredSize(d);
-        
+
         setContentPane(panel);
+        adjustSize();
     }
-    
+
+    protected void adjustSize() {
+        pack();
+        Dimension d = getSize();
+        if (d.height < MINIMUM_HEIGHT) {
+            d.height = MINIMUM_HEIGHT;
+            setSize(d);
+        }//  else if (d.height > SCREEN_HEIGHT) {
+        //     d.height = SCREEN_HEIGHT;
+        //     setSize(d);
+        // }
+    }
+
     /**
      * Retuns the event associated this notification.
      *
@@ -267,7 +245,7 @@ public class DesktopNotify extends JDialog
     public void setNid(int nid) {
         this.nid = nid;
     }
-  
+
     /**
      * Adds a component to this notification.
      *
@@ -314,7 +292,7 @@ public class DesktopNotify extends JDialog
             panel.applyComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         }
     }
-    
+
     /**
      * Sets the icon and font for this notification
      * based on the message type.
@@ -322,29 +300,29 @@ public class DesktopNotify extends JDialog
     private void setDesktopInterface() {
         ImageIcon icon;
         Color color;
-        switch (ev.getType()) {        
-        case CONFIRM_MESSAGE:
-            icon = config.getIcon(Notification.CONFIRM_ICON);
+        switch (ev.getType()) {
+        case CONFIRM:
+            icon = config.getIcon(IconType.CONFIRM);
             color = theme.getTitleForeground();
             break;
-        case INFORMATION_MESSAGE:
-            icon = config.getIcon(Notification.INFO_ICON);
-            color = theme.getTitleInfoForeground();  
+        case INFORMATION:
+            icon = config.getIcon(IconType.INFO);
+            color = theme.getTitleInfoForeground();
             break;
-        case SUCCESS_MESSAGE:
-            icon = config.getIcon(Notification.SUCCESS_ICON);
+        case SUCCESS:
+            icon = config.getIcon(IconType.SUCCESS);
             color = theme.getTitleSuccessForeground();
             break;
-        case WARNING_MESSAGE:
-            icon = config.getIcon(Notification.WARNING_ICON);
+        case WARNING:
+            icon = config.getIcon(IconType.WARNING);
             color = theme.getTitleWarningForeground();
             break;
-        case ERROR_MESSAGE:
-            icon = config.getIcon(Notification.ERROR_ICON);
+        case ERROR:
+            icon = config.getIcon(IconType.ERROR);
             color = theme.getTitleErrorForeground();
-            break;        
-        default: // PLAIN_MESSAGE:
-            icon = config.getIcon(Notification.NO_ICON);
+            break;
+        default: // PLAIN:
+            icon = config.getIcon(IconType.NONE);
             color = theme.getTitleForeground();
         }
         setNotifIcon(icon);
@@ -369,7 +347,7 @@ public class DesktopNotify extends JDialog
         }
     }
 
-        private void setOpacityProp() {        
+    private void setOpacityProp() {
         if (gDevice.isWindowTranslucencySupported(WindowTranslucency.TRANSLUCENT)) {
             setOpacity(ev.getOpacity());
         } else {
@@ -378,7 +356,7 @@ public class DesktopNotify extends JDialog
             }
         }
     }
-    
+
     private void setBorderType() {
         switch (ev.getBorder()) {
         case ROUNDED:
@@ -413,14 +391,17 @@ public class DesktopNotify extends JDialog
      */
     private void setNotificationTheme() {
         switch (ev.getTheme())  {
-        case LIGHT_THEME:
+        case DARK:
+            theme = DarkTheme.getInstance();
+            break;
+        case LIGHT:
             theme = LightTheme.getInstance();
             break;
-        case GRAY_THEME:
+        case GRAY:
             theme = GrayTheme.getInstance();
             break;
-        default: // DARK_THEME
-            theme = DarkTheme.getInstance();
+        default: // DEFAULT
+            theme = DefaultTheme.getInstance();
         }
     }
 
@@ -451,11 +432,36 @@ public class DesktopNotify extends JDialog
     public int getMarginTop() {
         return MARGIN_TOP;
     }
-    
+
     public int getMarginBottom() {
         return MARGIN_BOTTOM;
     }
-    
+
+    public void playSound() {
+        if (ev.isSoundEnabled()) {
+            try {
+                switch (ev.getType()) {
+                case SUCCESS:
+                    playSound(SoundType.SUCCESS);
+                    break;
+                case WARNING:
+                    playSound(SoundType.WARNING);
+                    break;
+                case ERROR:
+                    playSound(SoundType.ERROR);
+                    break;
+                default: // PLAIN or CONFIRM
+                    playSound(SoundType.MESSAGE);
+                }
+            } catch (Throwable ex) {
+                if (NotifyConfig.getDebug()) {
+                    System.out.println("ERROR! " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
     /**
      * Plays a sound based on
      * the type parameter.
@@ -469,6 +475,10 @@ public class DesktopNotify extends JDialog
         }
     }
 
+    protected void close() {
+        ServerOSD.getInstance().remove(getNid());
+    }
+
     /**
      * The action to do when the close
      * button of this notification is
@@ -476,11 +486,37 @@ public class DesktopNotify extends JDialog
      */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(jbClose)) {
-            ServerOSD.getInstance().remove(getNid());
+            close();
         }
     }
 
     //	====================== END METHODS =======================
+
+    @SuppressWarnings("serial")
+	private class IconButton extends JButton {
+
+        private Icon icon;
+
+        public IconButton () {
+            setBorderPainted(false);
+            setContentAreaFilled(false);
+        }
+
+        public void setIcon(Icon newIcon) {
+            super.setIcon(newIcon);
+            icon = newIcon;
+            int width = icon.getIconWidth();
+            int height = icon.getIconHeight();
+            setPreferredSize(new Dimension(width, height));
+        }
+
+        public void paintComponent(Graphics g) {
+            if (icon != null) {
+                icon.paintIcon(this, g, 0, 0);
+            } else {
+                super.paintComponent(g);
+            }
+        }
+    }
+
 }
-
-

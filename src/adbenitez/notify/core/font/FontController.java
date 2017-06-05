@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2017 Asiel Díaz Benítez <asieldbenitez@gmail.com>.
- * 
- * Based on NiconNotifyOSD 2.0 from: 
+ *
+ * Based on NiconNotifyOSD 2.0 from:
  * Frederick Adolfo Salazar Sanchez <fredefass01@gmail.com>
  *
  * This file is free software: you can redistribute it and/or modify
@@ -10,7 +10,7 @@
  * (at your option) any later version.
  * You should have received a copy of the GNU General Public License
  * along with this file.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
 package adbenitez.notify.core.font;
@@ -27,12 +27,14 @@ import java.io.InputStream;
  *
  */
 public class FontController {
+
     //	================= ATTRIBUTES ==============================
+
     private final String CLASS_NAME = getClass().getSimpleName();
-    
-    private static FontController font;
-    private Font ubuntuFont;
-    private String urlFont = "/adbenitez/notify/core/font/font.otf";
+
+    private static FontController fontController;
+    private Font font;
+    private String fontUrl = "/adbenitez/notify/core/font/font.otf";
     private InputStream in;
 
     //	================= END ATTRIBUTES ==========================
@@ -41,35 +43,41 @@ public class FontController {
 
     private FontController() {
         try {
-            in = getClass().getResourceAsStream(urlFont);
-            ubuntuFont = Font.createFont(0, in);
+            in = getClass().getResourceAsStream(fontUrl);
+            font = Font.createFont(0, in);
             in.close();
-        } catch (FontFormatException|IOException e) {
+        } catch (FontFormatException e) {
+            if (NotifyConfig.getDebug()) {
+                System.out.println(CLASS_NAME+": ERROR! " + e.getMessage());
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
             if (NotifyConfig.getDebug()) {
                 System.out.println(CLASS_NAME+": ERROR! " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
-    
+
     //	================= END CONSTRUCTORS =======================
 
     //	===================== METHODS ============================
-    
-    public Font getUbuntuFont(float size) {
-        return ubuntuFont.deriveFont(size);
-    }
-  
-    public Font getUbuntuBold(float size) {
-        return ubuntuFont.deriveFont(1, size);
-    }
-  
-    public static FontController getInstance() {
-        if (font == null) {
-            font = new FontController();
-        }
-        return font;
+
+    public Font getFont(float size) {
+        return font.deriveFont(size);
     }
 
-    //	====================== END METHODS =======================    
+    public Font getBoldFont(float size) {
+        return font.deriveFont(1, size);
+    }
+
+    public static FontController getInstance() {
+        if (fontController == null) {
+            fontController = new FontController();
+        }
+        return fontController;
+    }
+
+    //	====================== END METHODS =======================
+
 }

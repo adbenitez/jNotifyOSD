@@ -1,8 +1,5 @@
 /*
- * Copyright (c) 2017 Asiel Díaz Benítez <asieldbenitez@gmail.com>.
- * 
- * Based on NiconNotifyOSD 2.0 from: 
- * Frederick Adolfo Salazar Sanchez <fredefass01@gmail.com>
+ * Copyright (c) 2017 Asiel Díaz Benítez.
  *
  * This file is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,11 +7,17 @@
  * (at your option) any later version.
  * You should have received a copy of the GNU General Public License
  * along with this file.  If not, see <http://www.gnu.org/licenses/>.
- *  
+ *
  */
 
-package adbenitez.notify.gui.desktopNotify;
+package adbenitez.notify.event;
 
-public abstract interface NotifyDesktopInterface {
-    public abstract void closeNotify();
+public interface DecisionListener {
+
+    //	===================== METHODS ============================
+
+    public void decisionPerformed(DecisionEvent ev);
+
+    //	====================== END METHODS =======================
+
 }

@@ -16,10 +16,14 @@ import adbenitez.notify.Notification.ThemeType;
 
 import java.awt.Color;
 
-public class DarkTheme extends NotificationTheme {
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+
+public class DefaultTheme extends NotificationTheme {
+
     //	================= ATTRIBUTES ==============================
 
-    private static DarkTheme instance;
+    private static DefaultTheme instance;
     private final String themeName;
     private final ThemeType themeType;
 
@@ -27,9 +31,9 @@ public class DarkTheme extends NotificationTheme {
 
     //	================= CONSTRUCTORS ===========================
 
-    private DarkTheme() {
-        themeName = "Dark";
-        themeType = ThemeType.DARK;
+    private DefaultTheme() {
+        themeName = "Default";
+        themeType = ThemeType.DEFAULT;
     }
 
     //	================= END CONSTRUCTORS =======================
@@ -37,15 +41,15 @@ public class DarkTheme extends NotificationTheme {
     //	===================== METHODS ============================
 
     public Color getBackground() {
-        return new Color(Integer.parseInt("303030", 16));
+        return new Color(new JPanel().getBackground().getRGB());
     }
 
     public Color getTitleForeground() {
-        return new Color(Integer.parseInt("FFFFFF", 16));
+        return new Color(new JLabel().getForeground().getRGB());
     }
 
     public Color getMessageForeground() {
-        return new Color(Integer.parseInt("EEEEEE", 16));
+        return new Color(new JLabel().getForeground().getRGB());
     }
 
     public String getThemeName() {
@@ -56,12 +60,13 @@ public class DarkTheme extends NotificationTheme {
         return themeType;
     }
 
-    public static DarkTheme getInstance() {
+    public static DefaultTheme getInstance() {
         if (instance == null) {
-            instance = new DarkTheme();
+            instance = new DefaultTheme();
         }
         return instance;
     }
 
     //	====================== END METHODS =======================
+
 }
