@@ -4,7 +4,7 @@ A java API to show notifications, based on [NiconNotifyOSD 2.0](https://github.c
 
 ![alt jNotifyOSD-Screenshot](https://github.com/adbenitez/jNotifyOSD/blob/master/assets/Screenshot.png)
 
-###**Some features:**
+### **Some features:**
 * Transparency support for notifications.
 * You can change the color of the icons to suit your needs.
 * NONE icon option to show a notification without icon, useful to save space for long notifications.
