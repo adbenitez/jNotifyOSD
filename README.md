@@ -18,7 +18,6 @@ A java API to show notifications, based on [NiconNotifyOSD 2.0](https://github.c
 
 **IMPORTANT:** 
 * I haven't fixed the DesktopConfirm class, at the moment it isn't working as expected.
-* Windows users of this API say that ROUNDED border option is working as NONE border in Windows OS.
 
 # Example Usage
 

@@ -12,8 +12,10 @@
 
 package adbenitez.notify.core.util;
 
-import javax.swing.JTextArea;
 import java.awt.Color;
+
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  * The class to show the notification messages.
@@ -34,13 +36,15 @@ public class NLabel extends JTextArea {
     public NLabel(String text) {
         super(text);
         setEditable(false);
+        setCursor(null);
+        setOpaque(false);
+        setFocusable(false);
+        setFont(UIManager.getFont("Label.font"));
+        setWrapStyleWord(true);
         setLineWrap(true);
         setBackground(new Color(255,255,255, 0));
         setBorder(null);
-        setWrapStyleWord(true);
-        setFocusable(false);
-        setOpaque(false);
-    }
+     }
 
     //	================= END CONSTRUCTORS =======================
 

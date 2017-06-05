@@ -134,7 +134,7 @@ public class Main extends JFrame {
         c.fill = GridBagConstraints.BOTH;
         //c.weightx = 1;
         //c.weighty = 1;
-        c.insets = new Insets(0, 1, 1, 1);//top, left, bott, right
+        c.insets = new Insets(0, 1, 5, 1);//top, left, bott, right
 
         c.gridx = 0; c.gridy = 0;
         butt_panel.add(buttons[0], c);
