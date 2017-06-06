@@ -63,7 +63,7 @@ public class NotifyConfig {
 
         CLASS_NAME = NotifyConfig.class.getSimpleName();
         libName = "jNotifyOSD";
-        libVersion = "1.1.0";
+        libVersion = "1.3.0";
         libInfo = "By adbenitez (asieldbenitez@gmail.com)";
 
         CLOSE_ICON = "CLOSE_ICON.png";
