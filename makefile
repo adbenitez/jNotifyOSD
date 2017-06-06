@@ -3,28 +3,28 @@ MAIN_CLASS = adbenitez.demo.Main
 # CLASS_PATH
 CP = -cp '.:assets/lib/*:bin'
 
-JAVAC = javac $(CP) -d bin
+JAVAC = javac -source 1.5 -target 1.5 $(CP) -d bin
 JAR = jar cvmf assets/Manifest.mf dist/$(PROYECT_NAME).jar -C bin .
 PROGUARD = java -jar ~/jars/proguard.jar @assets/config.pro
 
-.PHONY: Main Proguard Rclass Rjar Mclass Mjar CLEAN CLASS_CLEAN JAR_CLEAN
+.PHONY: Main proguard rclass rjar mclass mjar CLEAN CLASS_CLEAN JAR_CLEAN
 
-Main: Mclass Rclass
+Main: mclass rclass
 
-Proguard:
+proguard:
 	$(PROGUARD)
 
-Rclass:
+rclass:
 	java $(CP) $(MAIN_CLASS)
 
-Rjar:
+rjar:
 	cd dist;java -jar $(PROYECT_NAME).jar
 
-Mjar: dist JAR_CLEAN Mclass
+mjar: dist JAR_CLEAN mclass
 	$(JAR)
 	$(COPY_ASSETS)
 
-Mclass: bin CLASS_CLEAN
+mclass: bin CLASS_CLEAN
 	cp -r -t bin/ ./src/*
 	find bin|grep '.java'|xargs rm
 	find src|grep '.java'|xargs $(JAVAC)
